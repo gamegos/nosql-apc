@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7a9c99a79cc3fe07cf0b9a4b824178b2",
-    "content-hash": "91e63a444334902841719ba41127f684",
+    "hash": "de4ebbc6a6cca06c90539427f0780c24",
+    "content-hash": "17bdea4f32d04c2ea99ef7d3a1b8e57b",
     "packages": [
         {
             "name": "gamegos/events",
@@ -52,16 +52,16 @@
         },
         {
             "name": "gamegos/nosql",
-            "version": "dev-master",
+            "version": "0.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamegos/nosql-php.git",
-                "reference": "2af00657d2c0de169f57c519d000ba345dbb8e49"
+                "reference": "7a4a2c3e3648e6172080173eafe37412ee0bee93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamegos/nosql-php/zipball/2af00657d2c0de169f57c519d000ba345dbb8e49",
-                "reference": "2af00657d2c0de169f57c519d000ba345dbb8e49",
+                "url": "https://api.github.com/repos/gamegos/nosql-php/zipball/7a4a2c3e3648e6172080173eafe37412ee0bee93",
+                "reference": "7a4a2c3e3648e6172080173eafe37412ee0bee93",
                 "shasum": ""
             },
             "require": {
@@ -94,7 +94,7 @@
                 "cache",
                 "nosql"
             ],
-            "time": "2016-02-05 10:00:31"
+            "time": "2016-02-09 14:50:06"
         }
     ],
     "packages-dev": [
@@ -1096,9 +1096,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "gamegos/nosql": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
