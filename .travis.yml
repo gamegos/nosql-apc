@@ -1,20 +1,34 @@
 language: php
 
-php:
-    - 5.5
+matrix:
+    include:
+        - php: 5.5
+          env: APCU_VERSION="4.0.11"
+        - php: 5.6
+          env:
+            - APCU_VERSION="4.0.11"
+            - CODE_COVERAGE=true
+        - php: 7.0
+          env: APCU_VERSION="5.1.5"
+    allow_failures:
+        - php: 5.6
+        - php: 7.0
+    fast_finish: true
 
 before_install:
     - composer self-update
 
 install:
-    - echo '' | pecl install apcu-4.0.10
+    - echo '' | pecl install apcu-$APCU_VERSION
     - travis_retry composer install --no-interaction --prefer-source
     
 before_script:
     - phpenv config-add tests/apc.ini
 
 script:
-    - ./vendor/bin/phpunit --coverage-clover clover.xml
+    - if [[ $CODE_COVERAGE == 'true' ]]; then
+        composer exec phpunit -- --coverage-clover clover.xml ; else
+        composer exec phpunit ; fi
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - if [[ $CODE_COVERAGE == 'true' ]]; then bash <(curl -s https://codecov.io/bash) ; fi
