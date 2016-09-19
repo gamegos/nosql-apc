@@ -9,7 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "~5.5 || 7.0.*",
-        "ext-apcu": "~4.0",
+        "ext-apcu": "~4.0 || ~5.1",
         "gamegos/nosql": "^0.2"
     },
     "autoload": {
