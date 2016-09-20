@@ -37,7 +37,7 @@ class ApcTest extends AbstractCommonStorageTest
         if (self::$extensionException) {
             $this->fail(self::$extensionException->getMessage());
         }
-        apc_clear_cache('user');
+        apcu_clear_cache();
     }
 
     /**
@@ -45,7 +45,7 @@ class ApcTest extends AbstractCommonStorageTest
      */
     protected function tearDown()
     {
-        apc_clear_cache('user');
+        apcu_clear_cache();
     }
 
     /**

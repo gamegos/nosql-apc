@@ -25,8 +25,8 @@ class Apc extends AbstractStorage
      */
     public function __construct()
     {
-        if (!extension_loaded('apc')) {
-            throw new ApcExtensionException('APC extension not loaded!');
+        if (!extension_loaded('apcu')) {
+            throw new ApcExtensionException('APCu extension not loaded!');
         }
         if (!ini_get('apc.enabled') || PHP_SAPI == 'cli' && !ini_get('apc.enable_cli')) {
             throw new ApcExtensionException('APC disabled by PHP runtime configuration!');
@@ -66,7 +66,7 @@ class Apc extends AbstractStorage
      */
     protected function hasInternal($key)
     {
-        return apc_exists($this->formatKey($key));
+        return apcu_exists($this->formatKey($key));
     }
 
     /**
@@ -75,7 +75,7 @@ class Apc extends AbstractStorage
     protected function getInternal($key, & $casToken = null)
     {
         $success = false;
-        $value   = apc_fetch($this->formatKey($key), $success);
+        $value   = apcu_fetch($this->formatKey($key), $success);
         if ($success) {
             if (func_num_args() > 1) {
                 $casToken = $this->createCasToken($value);
@@ -91,7 +91,7 @@ class Apc extends AbstractStorage
     protected function getMultiInternal(array $keys, array & $casTokens = null)
     {
         $realKeys = array_map([$this, 'formatKey'], $keys);
-        $values   = apc_fetch($realKeys);
+        $values   = apcu_fetch($realKeys);
         $result   = [];
 
         $prefixLength = strlen($this->getPrefix());
@@ -115,7 +115,7 @@ class Apc extends AbstractStorage
      */
     protected function addInternal($key, $value, $expiry = 0)
     {
-        return apc_add($this->formatKey($key), $value, $expiry);
+        return apcu_add($this->formatKey($key), $value, $expiry);
     }
 
     /**
@@ -126,7 +126,7 @@ class Apc extends AbstractStorage
         if (func_num_args() > 3) {
             return $this->casInternal($casToken, $key, $value, $expiry);
         }
-        return apc_store($this->formatKey($key), $value, $expiry);
+        return apcu_store($this->formatKey($key), $value, $expiry);
     }
 
     /**
@@ -137,8 +137,8 @@ class Apc extends AbstractStorage
         $casValue = $this->decodeCasToken($casToken);
         $realKey  = $this->formatKey($key);
 
-        if (apc_fetch($realKey) === $casValue) {
-            return apc_store($realKey, $value, $expiry);
+        if (apcu_fetch($realKey) === $casValue) {
+            return apcu_store($realKey, $value, $expiry);
         }
         return false;
     }
@@ -148,7 +148,7 @@ class Apc extends AbstractStorage
      */
     protected function deleteInternal($key)
     {
-        return apc_delete($this->formatKey($key));
+        return apcu_delete($this->formatKey($key));
     }
 
     /**
@@ -158,8 +158,8 @@ class Apc extends AbstractStorage
     protected function appendInternal($key, $value, $expiry = 0)
     {
         $realKey = $this->formatKey($key);
-        if (apc_exists($realKey)) {
-            $oldValue = apc_fetch($realKey);
+        if (apcu_exists($realKey)) {
+            $oldValue = apcu_fetch($realKey);
             if (!is_string($oldValue)) {
                 throw new UnexpectedValueException(sprintf(
                     'Method append() requires existing value to be string, %s found.',
@@ -168,7 +168,7 @@ class Apc extends AbstractStorage
             }
             $value = $oldValue . $value;
         }
-        return apc_store($realKey, $value, $expiry);
+        return apcu_store($realKey, $value, $expiry);
     }
 
     /**
@@ -178,17 +178,17 @@ class Apc extends AbstractStorage
     protected function incrementInternal($key, $offset = 1, $initial = 0, $expiry = 0)
     {
         $realKey = $this->formatKey($key);
-        if (!apc_exists($realKey) && apc_store($realKey, $initial, $expiry)) {
+        if (!apcu_exists($realKey) && apcu_store($realKey, $initial, $expiry)) {
             return $initial;
         }
 
         $success = false;
-        $value   = apc_inc($realKey, $offset, $success);
+        $value   = apcu_inc($realKey, $offset, $success);
         if ($success) {
             return $value;
         }
 
-        $oldValue = apc_fetch($realKey);
+        $oldValue = apcu_fetch($realKey);
         if (!is_int($oldValue)) {
             throw new UnexpectedValueException(sprintf(
                 'Method increment() requires existing value to be integer, %s found.',
