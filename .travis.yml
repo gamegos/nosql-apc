@@ -11,26 +11,21 @@ matrix:
         - php: 7.0
           env: APCU_VERSION="5.1.5"
     allow_failures:
-        - php: 5.6
         - php: 7.0
     fast_finish: true
 
 before_install:
+    - echo yes | pecl install apcu-$APCU_VERSION
+    - phpenv config-add tests/apc.ini
     - composer self-update
 
 install:
-    - echo '' | pecl install apcu-$APCU_VERSION
-    - if [[ $(phpenv version-name) = "7.0" ]]; then
-        echo "extension = apc.so" >> ~/.phpenv/versions/7.0/etc/php.ini ;
-      fi
     - travis_retry composer install --no-interaction --prefer-source
-    
-before_script:
-    - phpenv config-add tests/apc.ini
 
 script:
     - if [[ $CODE_COVERAGE == 'true' ]]; then
-        composer exec phpunit -- --coverage-clover clover.xml ; else
+        composer exec phpunit -- --coverage-clover clover.xml ;
+      else
         composer exec phpunit ;
       fi
 
