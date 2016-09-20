@@ -20,7 +20,7 @@ before_install:
 
 install:
     - echo '' | pecl install apcu-$APCU_VERSION
-    - if [[ $(phpenv version-name) == "7.0" ]]; then
+    - if [[ $(phpenv version-name) = "7.0" ]]; then
         echo "extension = apc.so" >> ~/.phpenv/versions/7.0/etc/php.ini ;
       fi
     - travis_retry composer install --no-interaction --prefer-source
