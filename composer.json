@@ -4,13 +4,14 @@
     "keywords": [
         "nosql",
         "key value",
-        "cache"
+        "cache",
+        "apc"
     ],
     "license": "MIT",
     "require": {
-        "php": "~5.5 || 7.0.*",
+        "php": ">=5.5",
         "ext-apcu": "~4.0 || ~5.1",
-        "gamegos/nosql": "^0.2"
+        "gamegos/nosql": "~1"
     },
     "autoload": {
         "psr-4": {
@@ -18,7 +19,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "4.8 - 5.5",
+        "phpunit/phpunit": "4.8 - 5.7",
         "gamegos/php-code-sniffer": "*"
     },
     "autoload-dev": {
@@ -28,6 +29,9 @@
                 "vendor/gamegos/nosql/tests/"
             ]
         }
+    },
+    "config": {
+        "cache-dir": ".tmp/composer"
     },
     "authors": [
         {
