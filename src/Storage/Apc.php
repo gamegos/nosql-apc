@@ -20,6 +20,18 @@ class Apc extends AbstractStorage
     protected $prefix = '';
 
     /**
+     * APCu extension version
+     * @var string
+     */
+    private $apcuVersion = '';
+
+    /**
+     * Resources can be stored or not.
+     * @var bool
+     */
+    private $storeResources = true;
+
+    /**
      * Construct
      * @throws \Gamegos\NoSql\Storage\Exception\ApcExtensionException If APC extension cannot be used
      */
@@ -31,6 +43,8 @@ class Apc extends AbstractStorage
         if (!ini_get('apc.enabled') || PHP_SAPI == 'cli' && !ini_get('apc.enable_cli')) {
             throw new ApcExtensionException('APC disabled by PHP runtime configuration!');
         }
+        $this->apcuVersion    = phpversion('apcu');
+        $this->storeResources = version_compare($this->apcuVersion, '5.1.13', '<');
     }
 
     /**
@@ -40,6 +54,15 @@ class Apc extends AbstractStorage
     public function getPrefix()
     {
         return $this->prefix;
+    }
+
+    /**
+     * Get APCu extension version.
+     * @return string
+     */
+    public function getApcuVersion()
+    {
+        return $this->apcuVersion;
     }
 
     /**
@@ -112,17 +135,25 @@ class Apc extends AbstractStorage
 
     /**
      * {@inheritdoc}
+     * @throws \UnexpectedValueException If the value is resource and APCu cannot store resources.
      */
     protected function addInternal($key, $value, $expiry = 0)
     {
+        if (is_resource($value) && !$this->storeResources) {
+            throw new UnexpectedValueException('APCu version 5.1.13 and above cannot store resources.');
+        }
         return apcu_add($this->formatKey($key), $value, $expiry);
     }
 
     /**
      * {@inheritdoc}
+     * @throws \UnexpectedValueException If the value is resource and APCu cannot store resources.
      */
     protected function setInternal($key, $value, $expiry = 0, $casToken = null)
     {
+        if (is_resource($value) && !$this->storeResources) {
+            throw new UnexpectedValueException('APCu version 5.1.13 and above cannot store resources.');
+        }
         if (func_num_args() > 3) {
             return $this->casInternal($casToken, $key, $value, $expiry);
         }
@@ -131,9 +162,14 @@ class Apc extends AbstractStorage
 
     /**
      * {@inheritdoc}
+     * @throws \UnexpectedValueException If the value is resource and APCu cannot store resources.
      */
     protected function casInternal($casToken, $key, $value, $expiry = 0)
     {
+        if (is_resource($value) && !$this->storeResources) {
+            throw new UnexpectedValueException('APCu version 5.1.13 and above cannot store resources.');
+        }
+
         $casValue = $this->decodeCasToken($casToken);
         $realKey  = $this->formatKey($key);
 

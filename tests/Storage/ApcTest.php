@@ -67,4 +67,34 @@ class ApcTest extends AbstractCommonStorageTest
         $apc->setPrefix($prefix);
         $this->assertEquals($prefix . $key, $apc->formatKey($key));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function nonStringProvider()
+    {
+        $data = parent::nonStringProvider();
+        if (version_compare(phpversion('apcu'), '5.1.13', '<')) {
+            return $data;
+        }
+        if (array_key_exists('resource', $data)) {
+            unset($data['resource']);
+        }
+        return $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function nonIntegerProvider()
+    {
+        $data = parent::nonIntegerProvider();
+        if (version_compare(phpversion('apcu'), '5.1.13', '<')) {
+            return $data;
+        }
+        if (array_key_exists('resource', $data)) {
+            unset($data['resource']);
+        }
+        return $data;
+    }
 }
