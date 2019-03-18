@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     && php -r "readfile('https://getcomposer.org/download/1.8.4/composer.phar');" > /usr/local/bin/composer \
     && chmod +x /usr/local/bin/composer
 
-RUN pecl install apcu-5.1.17 xdebug-2.7.0 \
-    && docker-php-ext-enable apcu xdebug \
+RUN pecl install apcu-5.1.17 xdebug-2.7.0 uopz-5.1.0 \
+    && docker-php-ext-enable apcu xdebug uopz \
     && rm -rf /tmp/pear
 
 COPY ci/test/php.ini /usr/local/etc/php/conf.d/
