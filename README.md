@@ -10,6 +10,6 @@
 
 Run the following command in the root directory of your project:
 ```sh
-composer require gamegos/nosql-apc:^0.2
+composer require gamegos/nosql-apc
 ```
 
