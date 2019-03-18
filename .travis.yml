@@ -25,3 +25,4 @@ after_success:
 cache:
   directories:
     - $TRAVIS_BUILD_DIR/.tmp/composer
+    - $TRAVIS_BUILD_DIR/vendor
