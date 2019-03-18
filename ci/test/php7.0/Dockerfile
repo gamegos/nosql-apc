@@ -11,7 +11,7 @@ RUN pecl install apcu-5.1.17 xdebug-2.5.5 \
     && docker-php-ext-enable apcu xdebug \
     && rm -rf /tmp/pear
 
-COPY tests/apc.ini /usr/local/etc/php/conf.d/
+COPY ci/test/php.ini /usr/local/etc/php/conf.d/
 
 ENV COMPOSER_DISABLE_XDEBUG_WARN 1
 
