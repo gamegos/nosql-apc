@@ -217,24 +217,35 @@ class Apc extends AbstractStorage
     protected function incrementInternal($key, $offset = 1, $initial = 0, $expiry = 0)
     {
         $realKey = $this->formatKey($key);
-        if (!apcu_exists($realKey) && apcu_store($realKey, $initial, $expiry)) {
-            return $initial;
+        // Step 1: Initial increment.
+        if (!apcu_exists($realKey)) {
+            if (apcu_store($realKey, $initial, $expiry)) {
+                return $initial;
+            }
+            // Something wrong with APC.
+            return false;
         }
-
+        // Step 2: Increment existing value.
         $success = false;
         $value   = apcu_inc($realKey, $offset, $success);
         if ($success) {
             return $value;
         }
-
-        $oldValue = apcu_fetch($realKey);
-        if (!is_int($oldValue)) {
+        // Step 3: Find out what is wrong.
+        $oldValue = apcu_fetch($realKey, $success);
+        if ($success) {
+            if (!is_int($oldValue)) {
+                throw new UnexpectedValueException(sprintf(
+                    'Method increment() requires existing value to be integer, %s found.',
+                    gettype($oldValue)
+                ));
+            }
             throw new UnexpectedValueException(sprintf(
-                'Method increment() requires existing value to be integer, %s found.',
-                gettype($oldValue)
+                'APC could not increment integer value (%d).',
+                $oldValue
             ));
         }
-
+        // Something really wrong with APC.
         return false;
     }
 
