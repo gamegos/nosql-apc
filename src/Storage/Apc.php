@@ -40,8 +40,11 @@ class Apc extends AbstractStorage
         if (!extension_loaded('apcu')) {
             throw new ApcExtensionException('APCu extension not loaded!');
         }
-        if (!ini_get('apc.enabled') || PHP_SAPI == 'cli' && !ini_get('apc.enable_cli')) {
+        if (!ini_get('apc.enabled')) {
             throw new ApcExtensionException('APC disabled by PHP runtime configuration!');
+        }
+        if (PHP_SAPI == 'cli' && !ini_get('apc.enable_cli')) {
+            throw new ApcExtensionException('APC CLI disabled by PHP runtime configuration!');
         }
         $this->apcuVersion    = phpversion('apcu');
         $this->storeResources = version_compare($this->apcuVersion, '5.1.13', '<');
